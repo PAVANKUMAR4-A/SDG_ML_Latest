@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Paged Data Display</title>
+     <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 2px solid #ddd;
+            padding: 10px;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            color: #000;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border: 1px solid #ddd;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+    </style>
+
+</head>
+
+<body>
+     <table>
+        <thead>
+            <tr>
+                {% for key in all_keys %}
+                    <th>{{ key }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for item in response['data'] %}
+            <tr>
+                {% for key, value in item.items() %}
+
+                    <td>{{ value }}</td>
+
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Pagination buttons -->
+    <div class="pagination">
+        <!-- Previous page button -->
+        {% if response['Page Num'] > 1 %}
+            <a href="/API/1.0/DataGenResponseSet?page={{ response['Page Num'] - 1 }}&per_page={{ response['Page Size'] }}&DataSet_GUID={{ search_param1 }}&DataSet_Name={{ search_param2 }}">&gt;</a>
+        {% endif %}
+
+        <!-- Page buttons -->
+        {% for i in range(1, response['Total Pages'] + 1) %}
+            {% if response['Page Num'] == i %}
+                <a href="/API/1.0/DataGenResponseSet?page={{ i }}&per_page={{ response['Page Size'] }}&DataSet_GUID={{ search_param1 }}&DataSet_Name={{ search_param2 }}" class="active">{{ i }}</a>
+            {% else %}
+                <a href="/API/1.0/DataGenResponseSet?page={{ i }}&per_page={{ response['Page Size'] }}&DataSet_GUID={{ search_param1 }}&DataSet_Name={{ search_param2 }}">{{ i }}</a>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Next page button -->
+        {% if response['Page Num'] < response['Total Pages'] %}
+            <a href="/API/1.0/DataGenResponseSet?page={{ response['Page Num'] + 1 }}&per_page={{ response['Page Size'] }}&DataSet_GUID={{ search_param1 }}&DataSet_Name={{ search_param2 }}">&lt;</a>
+        {% endif %}
+    </div>
+    <br>
+    <div>
+        {{input_set}}
+    </div>
+</body>
+</html>
